@@ -290,8 +290,10 @@
   <video class="background-video" autoplay muted loop playsinline aria-hidden="true">
     <source src="68367-865432244.mp4" type="video/mp4" />
   </video>
-
-  <div class="instruction">✨ Nhấp vào phong bì để mở thiệp ✨</div>
+  <audio id="background-audio" loop preload="metadata">
+    <source src="./Áo Mới Cà Mau - Dương Hồng Loan - Bolero Trữ Tình .mp3" type="audio/mpeg" />
+  </audio>
+  <div class="instruction" id="instruction" aria-live="polite">✨ Nhấp vào phong bì để mở thiệp ✨</div>
 
   <!-- Phong bì -->
   <div class="envelope-wrapper" id="envelope">
@@ -324,10 +326,9 @@
   <script>
     const envelope = document.getElementById('envelope');
     const card = document.getElementById('card');
-
-    // Preload file âm thanh mở thiệp (thay bằng URL audio thật của bạn nếu có)
-    const openAudio = new Audio('./Áo Mới Cà Mau - Dương Hồng Loan - Bolero Trữ Tình.mp3');
-    openAudio.preload = 'auto';
+    const backgroundAudio = document.getElementById('background-audio');
+    const instruction = document.getElementById('instruction');
+    const closedInstruction = '✨ Nhấp vào phong bì để mở thiệp ✨';
 
     // Hiệu ứng pháo hoa
     function triggerConfetti() {
@@ -341,12 +342,25 @@
     }
 
     // Sự kiện mở/đóng phong bì
-    envelope.addEventListener('click', () => {
+    envelope.addEventListener('click', async () => {
       const isOpen = envelope.classList.toggle('open');
       if (isOpen) {
-        openAudio.currentTime = 0;
-        openAudio.play().catch(() => {}); // Tránh lỗi autoplay trên di động
+        instruction.textContent = '🎵 Nhạc đang phát · Nhấp vào phong bì để đóng thiệp';
         setTimeout(triggerConfetti, 350);
+        try {
+          await backgroundAudio.play();
+        } catch (error) {
+          if (envelope.classList.contains('open')) {
+            console.error('Không thể phát nhạc nền:', error);
+            instruction.textContent = '⚠️ Không phát được nhạc. Hãy kiểm tra file MP3.';
+          }
+        }
+      } else {
+        backgroundAudio.pause();
+        if (backgroundAudio.readyState > 0) {
+          backgroundAudio.currentTime = 0;
+        }
+        instruction.textContent = closedInstruction;
       }
     });
 
