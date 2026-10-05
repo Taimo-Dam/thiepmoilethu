@@ -181,7 +181,7 @@
       border-radius: 10px;
       padding: 20px 15px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-      z-index: 2;
+      z-index: 1;
       transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.6s step-end;
       text-align: center;
       display: flex;
@@ -380,6 +380,7 @@
       font-size: clamp(15px, 4.5vw, 22px);
       text-shadow: 0 1px 0 #8a6525;
       pointer-events: none;
+      animation: twinkle 2.8s ease-in-out infinite;
     }
 
     .decoration.heart {
@@ -387,21 +388,51 @@
       font-size: clamp(11px, 3vw, 16px);
     }
 
-    .sparkle-one { top: 8%; left: 19%; }
-    .sparkle-two { top: 9%; right: 22%; }
-    .heart-one { top: 11%; left: 39%; }
-    .heart-two { top: 14%; right: 17%; }
-    .sparkle-three { top: 17%; left: 8%; }
-    .heart-three { top: 24%; left: 15%; }
-    .sparkle-four { top: 35%; right: 13%; }
-    .heart-four { top: 41%; right: 9%; }
+    .sparkle-one { top: 8%; left: 19%; animation-delay: -0.4s; }
+    .sparkle-two { top: 9%; right: 22%; animation-delay: -1.8s; }
+    .heart-one { top: 11%; left: 39%; animation-delay: -1.2s; }
+    .heart-two { top: 14%; right: 17%; animation-delay: -2.3s; }
+    .sparkle-three { top: 17%; left: 8%; animation-delay: -1.5s; }
+    .heart-three { top: 24%; left: 15%; animation-delay: -0.8s; }
+    .sparkle-four { top: 35%; right: 13%; animation-delay: -2s; }
+    .heart-four { top: 41%; right: 9%; animation-delay: -0.2s; }
+
+    .bunting {
+      position: absolute;
+      top: 29%;
+      left: 8%;
+      z-index: 2;
+      width: 84%;
+      height: 11%;
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    .bunting-string {
+      fill: none;
+      stroke: #9b7658;
+      stroke-width: 2;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .bunting-flag {
+      stroke: #fffdf3;
+      stroke-width: 1.5;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.7; transform: scale(0.88) rotate(-8deg); }
+      50% { opacity: 1; transform: scale(1.12) rotate(8deg); }
+    }
 
     .card {
       position: absolute;
       left: 7%;
-      bottom: 5%;
+      bottom: 2%;
       width: 86%;
-      height: 58%;
+      height: 61%;
       min-height: 0;
       padding: clamp(9px, 2.5vw, 14px) clamp(10px, 3vw, 16px);
       display: flex;
@@ -463,6 +494,31 @@
       color: #a64c58;
     }
 
+    .cat-meme {
+      width: 100%;
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: #a64c58;
+      font-size: clamp(0.72rem, 2.8vw, 0.88rem);
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .cat-meme svg {
+      width: clamp(52px, 15vw, 68px);
+      height: clamp(52px, 15vw, 68px);
+      flex: 0 0 auto;
+      overflow: visible;
+    }
+
+    .cat-meme figcaption {
+      max-width: 11ch;
+      text-align: left;
+    }
+
     .countdown-container {
       display: flex;
       justify-content: center;
@@ -493,38 +549,66 @@
 
     .door {
       position: absolute;
-      left: 7%;
+      left: 34%;
       bottom: 5%;
       width: 40%;
       height: 46%;
-      display: grid;
-      place-items: center;
-      padding: 10px;
-      border: 1.5px dashed #42332d;
-      border-radius: 48% 48% 5px 5px;
-      background:
-        radial-gradient(rgba(117, 99, 70, 0.1) 0.7px, transparent 0.8px) 0 0 / 7px 7px,
-        linear-gradient(145deg, #e8d7bd, #c9b59b);
-      box-shadow: 4px 4px 9px rgba(50, 37, 27, 0.2);
-      color: #45342f;
-      font: 600 clamp(0.9rem, 4vw, 1.25rem)/1.5 'Quicksand', sans-serif;
-      text-align: center;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: inherit;
       cursor: pointer;
       transform-origin: left center;
       transform-style: preserve-3d;
       transition: transform var(--door-motion), box-shadow var(--door-motion);
       z-index: 4;
-      backface-visibility: hidden;
+      appearance: none;
     }
 
-    .door::after {
+    .door-face {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 10px;
+      border: 1.5px dashed #42332d;
+      border-radius: 48% 48% 5px 5px;
+      text-align: center;
+      font: 600 clamp(0.82rem, 3.7vw, 1.12rem)/1.45 'Quicksand', sans-serif;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .door-front {
+      background:
+        radial-gradient(rgba(117, 99, 70, 0.1) 0.7px, transparent 0.8px) 0 0 / 7px 7px,
+        linear-gradient(145deg, #e8d7bd, #c9b59b);
+      box-shadow: 4px 4px 9px rgba(50, 37, 27, 0.2);
+      color: #45342f;
+    }
+
+    .door-front::after {
       content: '✦';
       position: absolute;
       top: 50%;
-      right: 10px;
+      right: 9px;
       color: #b88b43;
       font-size: 14px;
       transform: translateY(-50%);
+    }
+
+    .door-inside {
+      transform: rotateY(180deg);
+      background:
+        radial-gradient(rgba(117, 99, 70, 0.1) 0.7px, transparent 0.8px) 0 0 / 7px 7px,
+        linear-gradient(145deg, #fffdf3, #e8d7bd);
+      box-shadow: -4px 4px 9px rgba(50, 37, 27, 0.2);
+      color: #a64c58;
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(0.9rem, 4vw, 1.2rem);
+      font-weight: 700;
+      line-height: 1.2;
     }
 
     .door:focus-visible {
@@ -533,12 +617,52 @@
     }
 
     .envelope-wrapper.open .door {
-      transform: rotateY(-112deg);
+      transform: rotateY(-150deg);
       box-shadow: 8px 7px 12px rgba(50, 37, 27, 0.12);
     }
 
     .envelope-wrapper.open .card {
+      left: 35%;
+      width: 63%;
+      height: 63%;
+      bottom: 4%;
+      padding: 8px;
+      gap: 4px;
       transform: translateY(0);
+      z-index: 3;
+    }
+
+    .envelope-wrapper.open .cat-meme {
+      min-height: 46px;
+      gap: 4px;
+      font-size: 0.7rem;
+    }
+
+    .envelope-wrapper.open .cat-meme svg {
+      width: 46px;
+      height: 46px;
+    }
+
+    .envelope-wrapper.open .card h2 {
+      font-size: clamp(1rem, 4vw, 1.35rem);
+    }
+
+    .envelope-wrapper.open .card p.sub,
+    .envelope-wrapper.open .card .details {
+      font-size: clamp(0.61rem, 2.2vw, 0.7rem);
+    }
+
+    .envelope-wrapper.open .card .card-kicker {
+      font-size: 0.58rem;
+    }
+
+    .envelope-wrapper.open .time-box {
+      min-width: 34px;
+      padding: 4px;
+    }
+
+    .envelope-wrapper.open .countdown-container {
+      gap: 3px;
     }
 
     @media (max-width: 359px) {
@@ -550,7 +674,7 @@
       .card {
         left: 5%;
         width: 90%;
-        height: 58%;
+        height: 64%;
         gap: 4px;
         padding: 8px 7px;
       }
@@ -559,8 +683,19 @@
         font-size: 0.64rem;
       }
 
+      .cat-meme {
+        min-height: 48px;
+        gap: 5px;
+        font-size: 0.68rem;
+      }
+
+      .cat-meme svg {
+        width: 48px;
+        height: 48px;
+      }
+
       .door {
-        left: 5%;
+        left: 34%;
         width: 42%;
       }
     }
@@ -621,6 +756,18 @@
       <span class="decoration sparkle-four" aria-hidden="true">✦</span>
       <span class="decoration heart heart-four" aria-hidden="true">♥</span>
 
+      <svg class="bunting" viewBox="0 0 360 76" preserveAspectRatio="none" aria-hidden="true">
+        <path class="bunting-string" d="M4 7 Q180 65 356 7" />
+        <path class="bunting-flag" fill="#ef8290" d="M39 18 59 24 53 46Z" />
+        <path class="bunting-flag" fill="#f5c65f" d="m78 31 21 7-9 21Z" />
+        <path class="bunting-flag" fill="#9fc7a3" d="m119 43 22 6-11 21Z" />
+        <path class="bunting-flag" fill="#a9c9df" d="m164 51 22 1-11 22Z" />
+        <path class="bunting-flag" fill="#d9a6c1" d="m208 52 22-2-11 23Z" />
+        <path class="bunting-flag" fill="#f5c65f" d="m251 47 22-6-10 23Z" />
+        <path class="bunting-flag" fill="#ef8290" d="m292 35 21-7-8 23Z" />
+        <path class="bunting-flag" fill="#9fc7a3" d="m329 20 20-7-5 23Z" />
+      </svg>
+
       <h1 class="birthday-heading"><span>HAPPY</span><span>BIRTHDAY</span></h1>
 
       <section class="card" id="card" aria-label="Nội dung thiệp mời">
@@ -634,6 +781,29 @@
           <p>📍 <strong>Địa điểm:</strong> Hẻm 15, TP. Quy Nhơn</p>
         </div>
 
+        <figure class="cat-meme">
+          <svg viewBox="0 0 100 100" role="img" aria-label="Mèo con đội mũ sinh nhật bên cạnh bánh kem và bóng bay">
+            <path d="M77 12c-1-8 7-11 12-6 5 5 1 12-7 17" fill="none" stroke="#6b4850" stroke-width="2.5" stroke-linecap="round" />
+            <path d="M81 22c5-6 13-5 14 1 1 6-5 9-11 5-2-1-3-3-3-6Z" fill="#ef8290" stroke="#6b4850" stroke-width="2" />
+            <path d="M84 28c-4 8-5 13-4 20" fill="none" stroke="#6b4850" stroke-width="1.5" />
+            <path d="M19 68h24l-3 19H22z" fill="#f5c65f" stroke="#493a36" stroke-width="2.5" stroke-linejoin="round" />
+            <path d="M17 67c0-5 5-5 7-2 2-5 8-4 9 0 4-4 10-1 9 3H18" fill="#ef8290" stroke="#493a36" stroke-width="2.5" stroke-linejoin="round" />
+            <path d="M29 59v-8" stroke="#493a36" stroke-width="2" stroke-linecap="round" />
+            <path d="M29 48c-4-5 4-8 0-12 8 5 5 10 0 12Z" fill="#f6c453" stroke="#493a36" stroke-width="1.5" />
+            <path d="m48 31 7-17 9 17" fill="#ef8290" stroke="#493a36" stroke-width="2.5" stroke-linejoin="round" />
+            <path d="M51 24h10M54 18h6" stroke="#fff8ec" stroke-width="2.5" />
+            <circle cx="59" cy="12" r="3" fill="#f6c453" stroke="#493a36" stroke-width="1.5" />
+            <path d="M44 34 38 27l1 16c-7 6-10 15-8 24 2 9 10 14 20 14h19c11 0 18-7 18-17 0-12-7-23-18-27l-5-9-8 8-6-1-7-7Z" fill="#fffdf7" stroke="#493a36" stroke-width="3" stroke-linejoin="round" />
+            <path d="M45 52c2-3 5-3 7 0M68 52c2-3 5-3 7 0" fill="none" stroke="#493a36" stroke-width="2.5" stroke-linecap="round" />
+            <path d="M58 58c2-2 4-2 6 0-1 4-5 5-6 6-2-1-6-2-6-6 1-2 4-2 6 0Z" fill="#ef8290" stroke="#493a36" stroke-width="1.5" stroke-linejoin="round" />
+            <path d="m47 59-9-2m9 6-10 2m35-7 9-2m-9 7 10 2" stroke="#493a36" stroke-width="1.5" stroke-linecap="round" />
+            <ellipse cx="44" cy="62" rx="4" ry="2.5" fill="#f5a0a2" />
+            <ellipse cx="73" cy="62" rx="4" ry="2.5" fill="#f5a0a2" />
+            <path d="M56 77v8m13-8v8M50 83c-5 3-8 4-13 3m37-3c5 3 8 4 12 3" fill="none" stroke="#493a36" stroke-width="2.5" stroke-linecap="round" />
+          </svg>
+          <figcaption>You are my favourite! 💖</figcaption>
+        </figure>
+
         <div class="countdown-container" id="countdown" aria-label="Đếm ngược đến bữa tiệc">
           <div class="time-box"><span id="days">00</span><label>Ngày</label></div>
           <div class="time-box"><span id="hours">00</span><label>Giờ</label></div>
@@ -643,7 +813,8 @@
       </section>
 
       <button class="door" id="door" type="button" aria-controls="card" aria-expanded="false">
-        <span>Knock<br />Knock!!</span>
+        <span class="door-face door-front">Knock<br />Knock!!</span>
+        <span class="door-face door-inside" aria-hidden="true">From AE <br />AITI With Love!<br />💖</span>
       </button>
     </div>
   </div>
