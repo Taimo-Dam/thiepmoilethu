@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <!-- Thẻ Viewport bắt buộc để hiển thị tối ưu trên Mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Thiệp Mời Kỹ Thuật Số</title>
+  
+  <!-- Thư viện Canvas Confetti tạo hiệu ứng pháo hoa -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Biến CSS định nghĩa kích thước chuẩn (sẽ thay đổi theo màn hình) */
+    :root {
+      --envelope-w: 320px;
+      --envelope-h: 230px;
+      --border-horizontal: 160px; /* Bằng 1/2 --envelope-w */
+      --border-bottom: 115px;    /* Bằng 1/2 --envelope-h */
+      --border-top: 125px;       /* Chiều cao nắp phong bì */
+      --card-translate-y: -140px;/* Khoảng cách thiệp trượt lên */
+    }
+
+    body {
+      background-color: #f4ece1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      min-height: 100dvh; /* Dynamic Viewport Height cho trình duyệt mobile */
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      overflow: hidden;
+      padding: 16px;
+    }
+
+    /* Container chính chứa phong bì */
+    .envelope-wrapper {
+      position: relative;
+      width: var(--envelope-w);
+      height: var(--envelope-h);
+      cursor: pointer;
+      perspective: 1000px;
+      margin-top: 70px; 
+      transition: transform 0.3s ease;
+    }
+
+    .envelope-wrapper:active {
+      transform: scale(0.98);
+    }
+
+    /* Thân phong bì */
+    .envelope-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: #d4a373;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      z-index: 1;
+    }
+
+    /* Tấm thiệp mời */
+    .card {
+      position: absolute;
+      left: 4%;
+      top: 4%;
+      width: 92%;
+      height: 92%;
+      background: #ffffff;
+      border-radius: 6px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      z-index: 2;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 16px 12px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card h2 {
+      color: #bc6c25;
+      font-size: clamp(1.1rem, 4vw, 1.35rem);
+      margin-bottom: 6px;
+    }
+
+    .card p.desc {
+      color: #606c38;
+      font-size: clamp(0.75rem, 3vw, 0.88rem);
+      line-height: 1.3;
+      margin-bottom: 10px;
+    }
+
+    /* Styling bộ đếm ngược */
+    .countdown {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .time-box {
+      background: #f4ece1;
+      border-radius: 4px;
+      padding: 4px 6px;
+      min-width: 42px;
+      text-align: center;
+    }
+
+    .time-box span {
+      display: block;
+      font-size: clamp(0.85rem, 3.5vw, 1rem);
+      font-weight: bold;
+      color: #bc6c25;
+      line-height: 1.2;
+    }
+
+    .time-box p {
+      font-size: 0.6rem;
+      color: #283618;
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    /* Mặt trước phong bì */
+    .envelope-front {
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: var(--border-horizontal) solid #dda15e;
+      border-right: var(--border-horizontal) solid #dda15e;
+      border-bottom: var(--border-bottom) solid #fefae0;
+      border-top: var(--border-bottom) solid transparent;
+      border-radius: 0 0 8px 8px;
+      bottom: 0;
+      z-index: 3;
+    }
+
+    /* Nắp phong bì */
+    .flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: var(--border-horizontal) solid transparent;
+      border-right: var(--border-horizontal) solid transparent;
+      border-top: var(--border-top) solid #bc6c25;
+      transform-origin: top;
+      transition: transform 0.6s ease-in-out;
+      z-index: 4;
+    }
+
+    /* Trạng thái MỜ phong bì */
+    .envelope-wrapper.open .flap {
+      transform: rotateX(180deg);
+      z-index: 1;
+    }
+
+    .envelope-wrapper.open .card {
+      transform: translateY(var(--card-translate-y));
+      z-index: 5;
+    }
+
+    .instruction {
+      margin-top: 40px;
+      color: #283618;
+      font-size: clamp(0.8rem, 3vw, 0.95rem);
+      letter-spacing: 0.5px;
+      text-align: center;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    /* ===================================================
+       MEDIA QUERIES TỐI ƯU MÀN HÌNH
+    =================================================== */
+
+    /* Điện thoại nhỏ (< 360px) */
+    @media (max-width: 359px) {
+      :root {
+        --envelope-w: 270px;
+        --envelope-h: 190px;
+        --border-horizontal: 135px;
+        --border-bottom: 95px;
+        --border-top: 105px;
+        --card-translate-y: -110px;
+      }
+      .envelope-wrapper {
+        margin-top: 50px;
+      }
+    }
+
+    /* Tablet & Desktop (>= 768px) */
+    @media (min-width: 768px) {
+      :root {
+        --envelope-w: 420px;
+        --envelope-h: 280px;
+        --border-horizontal: 210px;
+        --border-bottom: 140px;
+        --border-top: 155px;
+        --card-translate-y: -160px;
+      }
+      .envelope-wrapper {
+        margin-top: 90px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="envelope-wrapper" id="envelope">
+    <div class="envelope-back"></div>
+    
+    <!-- Tấm thiệp mời -->
+    <div class="card">
+      <h2>MỜI DỰ TIỆC</h2>
+      <p class="desc">Trân trọng kính mời bạn đến tham dự buổi tiệc thân mật cùng chúng tôi!</p>
+      
+      <!-- Bộ đếm ngược -->
+      <div class="countdown" id="countdown">
+        <div class="time-box"><span id="days">00</span><p>Ngày</p></div>
+        <div class="time-box"><span id="hours">00</span><p>Giờ</p></div>
+        <div class="time-box"><span id="minutes">00</span><p>Phút</p></div>
+        <div class="time-box"><span id="seconds">00</span><p>Giây</p></div>
+      </div>
+    </div>
+
+    <div class="envelope-front"></div>
+    <div class="flap"></div>
+  </div>
+
+  <p class="instruction">Nhấp vào phong bì để mở thiệp</p>
+
+  <script>
+    const envelope = document.getElementById('envelope');
+    
+    // Khởi tạo file âm thanh mở phong bì (Thay 'open-sound.mp3' bằng tệp âm thanh của bạn)
+    const openAudio = new Audio('open-sound.mp3');
+
+    // 1. Hiệu ứng pháo hoa
+    function triggerConfetti() {
+      confetti({
+        particleCount: 60,
+        spread: 60,
+        origin: { y: 0.6 }
+      });
+    }
+
+    // 2. Mở / Đóng phong bì
+    envelope.addEventListener('click', () => {
+      const isOpen = envelope.classList.toggle('open');
+      if (isOpen) {
+        openAudio.currentTime = 0;
+        openAudio.play().catch(() => {});
+        setTimeout(triggerConfetti, 400);
+      }
+    });
+
+    // 3. Logic đếm ngược thời gian
+    // Bạn hãy thay đổi ngày giờ sự kiện ở đây (Định dạng: YYYY-MM-DDTHH:mm:ss)
+    const eventDate = new Date('2026-12-31T18:00:00').getTime();
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = eventDate - now;
+
+      if (distance < 0) {
+        document.getElementById('countdown').innerHTML = "<p style='color:#bc6c25; font-weight:bold; font-size:0.85rem;'>Sự kiện đã diễn ra!</p>";
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById('days').innerText = days < 10 ? '0' + days : days;
+      document.getElementById('hours').innerText = hours < 10 ? '0' + hours : hours;
+      document.getElementById('minutes').innerText = minutes < 10 ? '0' + minutes : minutes;
+      document.getElementById('seconds').innerText = seconds < 10 ? '0' + seconds : seconds;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  </script>
+
+</body>
+</html>
