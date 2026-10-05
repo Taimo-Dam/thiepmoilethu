@@ -283,6 +283,317 @@
       0%, 100% { transform: scale(1); opacity: 0.9; }
       50% { transform: scale(1.05); opacity: 1; }
     }
+
+    :root {
+      --paper: #fffdf3;
+      --ink: #332a27;
+      --rose: #d96876;
+      --gold: #e8b94c;
+      --house-width: clamp(290px, 86vw, 440px);
+      --house-height: clamp(390px, 115vw, 540px);
+      --door-motion: 0.85s cubic-bezier(0.2, 0.75, 0.25, 1);
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      gap: clamp(18px, 4vh, 32px);
+      padding: 24px 12px;
+      overflow: hidden;
+      background: #f4ece1;
+    }
+
+    body::before {
+      background: rgba(255, 250, 237, 0.42);
+    }
+
+    .instruction {
+      margin: 0;
+      color: #6d4c41;
+      text-align: center;
+      text-wrap: balance;
+      text-shadow: 0 1px 8px rgba(255, 255, 255, 0.8);
+    }
+
+    .envelope-wrapper {
+      width: var(--house-width);
+      height: var(--house-height);
+      flex: 0 0 auto;
+      background: transparent;
+      box-shadow: none;
+      perspective: 1200px;
+      filter: drop-shadow(0 18px 22px rgba(47, 38, 31, 0.24));
+    }
+
+    .house-paper {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      isolation: isolate;
+      background-color: var(--paper);
+      background-image:
+        radial-gradient(rgba(117, 99, 70, 0.12) 0.7px, transparent 0.8px),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.76), rgba(238, 225, 198, 0.28));
+      background-size: 7px 7px, 100% 100%;
+      clip-path: polygon(50% 0, 100% 22%, 100% 100%, 0 100%, 0 22%);
+    }
+
+    .roof-line {
+      position: absolute;
+      inset: 0 0 auto;
+      width: 100%;
+      height: 31%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .roof-line path {
+      fill: none;
+      stroke: #342c28;
+      stroke-width: 1.6;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .birthday-heading {
+      position: absolute;
+      top: 13%;
+      left: 8%;
+      width: 84%;
+      display: grid;
+      justify-items: center;
+      color: var(--rose);
+      font-size: clamp(2.2rem, 10vw, 3.5rem);
+      font-weight: 700;
+      line-height: 0.98;
+      letter-spacing: -1.5px;
+      text-align: center;
+      text-shadow: 2px 3px 0 #fff, 3px 4px 0 rgba(107, 64, 66, 0.22);
+      transform: rotate(-2deg);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .decoration {
+      position: absolute;
+      z-index: 2;
+      color: var(--gold);
+      font-size: clamp(15px, 4.5vw, 22px);
+      text-shadow: 0 1px 0 #8a6525;
+      pointer-events: none;
+    }
+
+    .decoration.heart {
+      color: #7b3038;
+      font-size: clamp(11px, 3vw, 16px);
+    }
+
+    .sparkle-one { top: 8%; left: 19%; }
+    .sparkle-two { top: 9%; right: 22%; }
+    .heart-one { top: 11%; left: 39%; }
+    .heart-two { top: 14%; right: 17%; }
+    .sparkle-three { top: 17%; left: 8%; }
+    .heart-three { top: 24%; left: 15%; }
+    .sparkle-four { top: 35%; right: 13%; }
+    .heart-four { top: 41%; right: 9%; }
+
+    .card {
+      position: absolute;
+      left: 7%;
+      bottom: 5%;
+      width: 86%;
+      height: 58%;
+      min-height: 0;
+      padding: clamp(9px, 2.5vw, 14px) clamp(10px, 3vw, 16px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(4px, 1.2vh, 7px);
+      border: 1px solid rgba(120, 93, 66, 0.17);
+      border-radius: 12px 12px 7px 7px;
+      background: #fffef9;
+      box-shadow: 0 7px 20px rgba(67, 47, 34, 0.15);
+      text-align: center;
+      z-index: 2;
+      visibility: hidden;
+      transform: translateY(105%);
+      transition: transform 0.75s cubic-bezier(0.2, 0.75, 0.25, 1) 0.12s;
+    }
+
+    .card.visible {
+      visibility: visible;
+      z-index: 3;
+    }
+
+    .card > * {
+      opacity: 1;
+      transition: none;
+    }
+
+    .card .card-kicker {
+      color: #a64c58;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .card h2 {
+      color: #b85664;
+      font-size: clamp(1.25rem, 5vw, 1.8rem);
+      line-height: 1.1;
+    }
+
+    .card p.sub {
+      max-width: 32ch;
+      color: #665750;
+      font-size: clamp(0.68rem, 2.8vw, 0.82rem);
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    .card .details {
+      width: 100%;
+      color: #443733;
+      font-size: clamp(0.67rem, 2.5vw, 0.78rem);
+      line-height: 1.35;
+    }
+
+    .card .details strong {
+      color: #a64c58;
+    }
+
+    .countdown-container {
+      display: flex;
+      justify-content: center;
+      gap: clamp(4px, 1.6vw, 8px);
+      width: 100%;
+    }
+
+    .time-box {
+      min-width: clamp(40px, 11vw, 48px);
+      padding: 5px 6px;
+      border: 1px solid #f0dfcf;
+      border-radius: 7px;
+      background: #fff4e8;
+    }
+
+    .time-box span {
+      display: block;
+      color: #6d4c41;
+      font-size: clamp(0.82rem, 3vw, 0.95rem);
+      font-weight: 700;
+    }
+
+    .time-box label {
+      color: #8b7770;
+      font-size: clamp(0.53rem, 2vw, 0.65rem);
+      text-transform: uppercase;
+    }
+
+    .door {
+      position: absolute;
+      left: 7%;
+      bottom: 5%;
+      width: 40%;
+      height: 46%;
+      display: grid;
+      place-items: center;
+      padding: 10px;
+      border: 1.5px dashed #42332d;
+      border-radius: 48% 48% 5px 5px;
+      background:
+        radial-gradient(rgba(117, 99, 70, 0.1) 0.7px, transparent 0.8px) 0 0 / 7px 7px,
+        linear-gradient(145deg, #e8d7bd, #c9b59b);
+      box-shadow: 4px 4px 9px rgba(50, 37, 27, 0.2);
+      color: #45342f;
+      font: 600 clamp(0.9rem, 4vw, 1.25rem)/1.5 'Quicksand', sans-serif;
+      text-align: center;
+      cursor: pointer;
+      transform-origin: left center;
+      transform-style: preserve-3d;
+      transition: transform var(--door-motion), box-shadow var(--door-motion);
+      z-index: 4;
+      backface-visibility: hidden;
+    }
+
+    .door::after {
+      content: '✦';
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      color: #b88b43;
+      font-size: 14px;
+      transform: translateY(-50%);
+    }
+
+    .door:focus-visible {
+      outline: 3px solid #a64c58;
+      outline-offset: 4px;
+    }
+
+    .envelope-wrapper.open .door {
+      transform: rotateY(-112deg);
+      box-shadow: 8px 7px 12px rgba(50, 37, 27, 0.12);
+    }
+
+    .envelope-wrapper.open .card {
+      transform: translateY(0);
+    }
+
+    @media (max-width: 359px) {
+      :root {
+        --house-width: min(290px, 90vw);
+        --house-height: min(390px, 120vw);
+      }
+
+      .card {
+        left: 5%;
+        width: 90%;
+        height: 58%;
+        gap: 4px;
+        padding: 8px 7px;
+      }
+
+      .card .details {
+        font-size: 0.64rem;
+      }
+
+      .door {
+        left: 5%;
+        width: 42%;
+      }
+    }
+
+    @media (min-width: 768px) {
+      :root {
+        --house-width: min(440px, 70vw);
+        --house-height: 540px;
+      }
+    }
+
+    @media (max-height: 560px) and (orientation: landscape) {
+      :root {
+        --house-width: min(68vh, 440px);
+        --house-height: min(83vh, 540px);
+      }
+
+      body {
+        gap: 12px;
+        padding-block: 12px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        transition-delay: 0ms !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -293,42 +604,58 @@
   <audio id="background-audio" loop preload="metadata">
     <source src="./Áo Mới Cà Mau - Dương Hồng Loan - Bolero Trữ Tình .mp3" type="audio/mpeg" />
   </audio>
-  <div class="instruction" id="instruction" aria-live="polite">✨ Nhấp vào phong bì để mở thiệp ✨</div>
+  <div class="instruction" id="instruction" aria-live="polite">🚪 Gõ cửa nhỏ để mở thiệp mời</div>
 
-  <!-- Phong bì -->
   <div class="envelope-wrapper" id="envelope">
-    <div class="flap"></div>
-    <div class="sticker"></div>
-    
-    <!-- Tấm thiệp bên trong -->
-    <div class="card" id="card">
-      <h2>Mời Bạn Đến Dự Sinh Nhật!</h2>
-      <p class="sub">Sự hiện diện của bạn là niềm niềm vui lớn nhất!</p>
-      
-      <div class="details">
-        <p>📅 <strong>Thời gian:</strong> 19:30 - Ngày 11/10/2026</p>
-        <p>📍 <strong>Địa điểm:</strong> Hẻm 15, TP. Quy Nhơn</p>
-      </div>
+    <div class="house-paper">
+      <svg class="roof-line" viewBox="0 0 440 170" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M8 158 L220 8 L432 158" />
+      </svg>
 
-      <!-- Đếm ngược -->
-      <div class="countdown-container" id="countdown">
-        <div class="time-box"><span id="days">00</span><label>Ngày</label></div>
-        <div class="time-box"><span id="hours">00</span><label>Giờ</label></div>
-        <div class="time-box"><span id="minutes">00</span><label>Phút</label></div>
-        <div class="time-box"><span id="seconds">00</span><label>Giây</label></div>
-      </div>
+      <span class="decoration sparkle-one" aria-hidden="true">✦</span>
+      <span class="decoration sparkle-two" aria-hidden="true">✦</span>
+      <span class="decoration heart heart-one" aria-hidden="true">♥</span>
+      <span class="decoration heart heart-two" aria-hidden="true">♥</span>
+      <span class="decoration sparkle-three" aria-hidden="true">✦</span>
+      <span class="decoration heart heart-three" aria-hidden="true">♥</span>
+      <span class="decoration sparkle-four" aria-hidden="true">✦</span>
+      <span class="decoration heart heart-four" aria-hidden="true">♥</span>
+
+      <h1 class="birthday-heading"><span>HAPPY</span><span>BIRTHDAY</span></h1>
+
+      <section class="card" id="card" aria-label="Nội dung thiệp mời">
+        <p class="card-kicker">🎂 Bạn được mời 🎂</p>
+        <h2>Mời Bạn Đến Dự Sinh Nhật!</h2>
+        <p class="sub">Sự hiện diện của bạn là niềm vui lớn nhất. Cùng đến chung vui nhé!</p>
+
+        <div class="details">
+          <p>🗓️ <strong>Ngày:</strong> 11/10/2026</p>
+          <p>🕢 <strong>Giờ:</strong> 19:30</p>
+          <p>📍 <strong>Địa điểm:</strong> Hẻm 15, TP. Quy Nhơn</p>
+        </div>
+
+        <div class="countdown-container" id="countdown" aria-label="Đếm ngược đến bữa tiệc">
+          <div class="time-box"><span id="days">00</span><label>Ngày</label></div>
+          <div class="time-box"><span id="hours">00</span><label>Giờ</label></div>
+          <div class="time-box"><span id="minutes">00</span><label>Phút</label></div>
+          <div class="time-box"><span id="seconds">00</span><label>Giây</label></div>
+        </div>
+      </section>
+
+      <button class="door" id="door" type="button" aria-controls="card" aria-expanded="false">
+        <span>Knock<br />Knock!!</span>
+      </button>
     </div>
-
-    <div class="pocket"></div>
   </div>
 
   <!-- JavaScript logic -->
   <script>
     const envelope = document.getElementById('envelope');
     const card = document.getElementById('card');
+    const door = document.getElementById('door');
     const backgroundAudio = document.getElementById('background-audio');
     const instruction = document.getElementById('instruction');
-    const closedInstruction = '✨ Nhấp vào phong bì để mở thiệp ✨';
+    const closedInstruction = '🚪 Gõ cửa nhỏ để mở thiệp mời';
 
     // Hiệu ứng pháo hoa
     function triggerConfetti() {
@@ -344,8 +671,9 @@
     // Sự kiện mở/đóng phong bì
     envelope.addEventListener('click', async () => {
       const isOpen = envelope.classList.toggle('open');
+      door.setAttribute('aria-expanded', String(isOpen));
       if (isOpen) {
-        instruction.textContent = '🎵 Nhạc đang phát · Nhấp vào phong bì để đóng thiệp';
+        instruction.textContent = '🎵 Nhạc đang phát · Gõ cửa để đóng thiệp';
         setTimeout(triggerConfetti, 350);
         try {
           await backgroundAudio.play();
@@ -360,11 +688,17 @@
         if (backgroundAudio.readyState > 0) {
           backgroundAudio.currentTime = 0;
         }
+        card.classList.remove('visible');
         instruction.textContent = closedInstruction;
       }
     });
 
-    // Chống đóng thiệp khi người dùng chạm vào đọc nội dung bên trong
+    door.addEventListener('transitionend', (event) => {
+      if (event.target === door && event.propertyName === 'transform' && envelope.classList.contains('open')) {
+        card.classList.add('visible');
+      }
+    });
+
     card.addEventListener('click', (e) => {
       if (envelope.classList.contains('open')) {
         e.stopPropagation();
